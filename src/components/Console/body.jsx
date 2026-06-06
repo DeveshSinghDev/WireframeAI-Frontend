@@ -1,5 +1,7 @@
 import { motion } from "motion/react"
+import { Editor } from "@monaco-editor/react"
 import { useState } from "react"
+import { Code, Code2 } from "lucide-react"
 const ConsoleBody = ()=>{
   const [leftwidth,setleftwidth] = useState(50)
 
@@ -17,14 +19,15 @@ const ConsoleBody = ()=>{
     window.addEventListener("mouseup", handleMouseUp);
   };
   return(
-    <div className="flex">
+    <div className="flex items-center">
       <div className="bg-green-400 h-screen" style={{width:`${leftwidth}%`}}>
 
       </div>
       {/* <motion.div drag="x" dragMomentum={false} onDrag={(event,info)=>{console.log(info.offset.x); setleftwidth(prev=>Math.max(900,prev+info.delta.x))}} className="bg-gray-500 h-screen w-10">drag me </motion.div> */}
-      <div onMouseDown={(e)=>{e.preventDefault();handleMouseDown()}}   className="bg-gray-500 h-screen w-2 cursor-col-resize"></div>
-      <div className="bg-blue-400 h-screen flex-1" >
-
+      <div onMouseDown={(e)=>{e.preventDefault();handleMouseDown()}}   className="h-screen w-2 cursor-col-resize"></div>
+      <div className="bg-[#1E1E1E] h-screen rounded-3xl overflow-hidden flex-1 min-w-0 flex flex-col " >
+        <h1 className="py-5 px-6 flex gap-2 text-white"><Code2 size={25} color="white" className="bg-red-500 rounded-[6px]"/>Code editor</h1>
+        <Editor defaultLanguage="javascript" width="100%" height="100%" theme="vs-dark" defaultValue="//Your code will appear here"></Editor>
       </div>
     </div>
   )
