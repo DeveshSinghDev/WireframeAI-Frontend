@@ -1,64 +1,78 @@
-import { useState } from "react";
-import profile from "../assets/profile.png";
-import { MenuIcon } from "lucide-react"
 import { Link } from "react-router-dom";
+
+
 function Navbar() {
-    const [open, setOpen] = useState(false);
-    const isLoggedIn = false;
+  return (
+    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
 
-    return (
-        <div className="w-full  h-16 flex items-center justify-between px-4 
-     text-white relative ">
+        <Link
+          to="/"
+          className="flex items-center gap-2 cursor-pointer"
+        >
 
-            <div className="text-5xl cursor-pointer"
-                onClick={() => setOpen(true)}
-            >
-                <MenuIcon />
-                {/* side bar */}
-                <div className={` h-40 w-fit absolute flex items-center z-20 text-sm transform ${!open ? "-translate-x-40" : "translate-x-0"} transition-all`}>
-                    <ul className="space-y-4">
-                        <li className="cursor-pointer bg-gray-900 rounded-2xl w-17 text-center">
-                            <Link to="/">Home</Link>
-                        </li>
+          <span className="text-lg font-semibold text-black">
+            WireframeAI
+          </span>
+        </Link>
 
-                        <li className="cursor-pointer bg-amber-300 rounded-2xl w-21 text-center">
-                            <Link to="/about">About us</Link>
-                        </li>
 
-                        <li className="cursor-pointer bg-amber-300 rounded-2xl w-28 text-center">
-                            <Link to="/components">Components</Link>
-                        </li>
-                    </ul>
-                </div>
+        <div className="hidden md:flex items-center gap-8">
 
-            </div>
-            <h1 className="absolute left-1/2 transform -translate-x-1/2 text-lg font-semibold">
-                WireframeAI
-            </h1>
+          <Link
+            to="/solutions"
+            className="flex items-center gap-1 text-sm text-gray-600 hover:text-black transition hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+          >
+            Solutions
 
-            {isLoggedIn ? (
-  <img
-    src={profile}
-    alt="profile"
-    className="w-10 h-10 rounded-full object-cover"
-  />
-) : (
-  <Link
-    to="/Signup"
-    className="px-2 py-1 border font-serif border-white rounded-2xl text-white hover:bg-white hover:text-black transition"
-  >
-    Sign In
-  </Link>
-)}
-            {open && (
-                <div
-                    className="fixed inset-0 bg-black/50 backdrop-blur-xs z-10"
-                    onClick={() => setOpen(false)}
-                ></div>
-            )}
+          </Link>
+
+          <Link
+            to="/Pricing"
+            className="flex items-center gap-1 text-sm text-gray-600 hover:text-black transition hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+          >
+            Pricing
+
+          </Link>
+
+          <Link
+            to="/about"
+            className="text-sm text-gray-600 hover:text-black hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+          >
+            About Us
+          </Link>
+
+          <Link
+            to="/components"
+            className="text-sm text-gray-600 hover:text-black transition hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+          >
+            Components
+          </Link>
 
         </div>
-    );
+
+
+        <div className="flex items-center gap-4">
+
+          <Link
+            to="/login"
+            className="text-sm text-gray-600 hover:text-black transition hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
+          >
+            Login
+          </Link>
+
+          <Link
+            to="/signup"
+            className="bg-black text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition cursor-pointer"
+          >
+            Get Started Free
+          </Link>
+
+        </div>
+
+      </div>
+    </nav>
+  );
 }
 
 export default Navbar;

@@ -1,206 +1,340 @@
-import { useState } from "react";
-import phone from '../assets/phone.png'
-import video from "../assets/demo.mp4";
-import photo from "../assets/photo1.png"
-import photo1 from "../assets/photo2.png"
-import photo2 from "../assets/photo.png"
-import arrow from "../assets/arrow.png"
-import TestimonialStack from "../components/TestimonialStack";
-import Footer from "../components/Footer";
-import Navbar from '../components/Navbar';
+import { useState, useEffect, useRef } from "react";
+import { Star, ChevronDown, BarChart3, BookOpen, Users, Rocket } from "lucide-react";
+import Wire from "../assets/wire.mp4";
+import Dotgrid from "../components/Dotgrid";
+import Precision from "../components/Features";
+import Navbar from "../components/Navbar";
+import Say from "../components/Testimonial"
+import Pricing from "../components/Pricing";
 import FAQ from "../components/FAQ";
+import Footer from "../components/Footer";
 
-function Home() {
+const TABS = [
+  { id: "draw", label: "Draw", icon: BarChart3 },
+  { id: "generate", label: "Generate", icon: BookOpen },
+  { id: "preview", label: "Preview", icon: Users },
+  { id: "export", label: "Export", icon: Rocket },
+];
+
+// ── OVERLAY INTERFACE SUB-COMPONENTS ──
+function AnalyseOverlay() {
+  const steps = ["Upload Wireframe","Detect Components","Analyze Layout","Generate Structure"];
   return (
-    <div className="background">
-      <Navbar /> 
-
-    <div className="">
-      <div className=" mt-15 flex flex-col gap-4 text-white ml-4">
-        <h1 className="text-[40px] font-extrabold leading-tight">Turn Ideas Into
-          <span className="text-amber-500 block -mt-2">Components</span></h1>
-        <p className="text-[19px]">Generate quick react components for you website using our wireframe to react
-          component generator powered by AI.</p>
-        <button className="bg-amber-500 cursor-pointer w-32 h-12 rounded-2xl text-center text-black border-t-2 border-white  hover:scale-105 transition font-bold">
-          Get Started
-        </button>
-        <div className="relative w-[380px] mx-auto mt-6">
-
-
-          {/* VIDEO */}
-          <div className="absolute top-[85px] left-1/2 -translate-x-1/2 
-    w-57 h-115 rounded-[22px] overflow-hidden z-0 rotate-[4deg]">
-
-            <video
-              src={video}
-              autoPlay
-              loop
-              muted
-              className="w-full h-full object-cover "
-            />
-
-          </div>
-
-          {/* PHONE */}
-          <img
-            src={phone}
-            alt="phone"
-            className="relative -z-10 w-full"
-          />
-
+    <div className="flex items-center justify-center mb-8 [animation:fadeInOverlay_0.4s_ease-out_forwards] p-4">
+      <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-6 w-full max-w-xs border border-gray-100">
+        <p className="text-[11px] font-bold text-purple-600 uppercase tracking-widest mb-1">Step 1 of 4</p>
+        <h3 className="text-sm font-semibold text-gray-900 mb-1"> Analyze Wireframe</h3>
+        <p className="text-xs text-gray-500 mb-4">Upload your sketch and let AI detect layouts and components.</p>
+        <div className="bg-gray-100 rounded-full h-1.5 mb-4">
+          <div className="bg-purple-600 h-1.5 rounded-full w-1/4" />
         </div>
-      </div>
-      {/* Steps */}
-      <div >
-        <h1 className="text-white font-bold items-center text-[30px] 
-      leading-tight -mt-2 text-center">Create UI Components <br />in 3 simple steps</h1>
-        <p className="text-gray-200 text-center text-[15px] p-2">
-          Our AI Powered component genertor makes it easy for you to design your webspage with easse and fast
-        </p>
-        {/* <Card topvariant={false}/>
-        <Card topvariant={true}/>
-        <Card topvariant={false}/> */}
-
-        <Card
-          topvariant={false}
-          image={photo}
-          title="Create The Wireframe"
-          desc="Draw the structure of the component using our editor tools"
-        />
-
-        <Card
-          topvariant={true}
-          image={photo2}
-          title="AI Processing"
-          desc="Well structured code that follow industry best practice"
-        />
-
-        <Card
-          topvariant={false}
-          image={photo1}
-          title="Export & Use"
-          desc="Use your components directly in your project"
-        />
-
-        {/* PricingCard */}
-        <div className="mt-15 mb-9">
-          <h1 className="text-white font-bold text-center text-[38px]">Pricing</h1>
-          <p className="text-[#BFBFBF] flex justify-center items-center  text-[12px]">Explore from our affordable ranges of price for our service </p>
+        <div className="space-y-2.5">
+          {steps.map((step, i) => (
+            <div key={step} className="flex items-center gap-2.5">
+              <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0 ${i === 0 ? "bg-purple-600 text-white" : "bg-gray-100 text-gray-400"}`}>{i + 1}</div>
+              <span className={`text-xs ${i === 0 ? "text-gray-900 font-medium" : "text-gray-400 font-normal"}`}>{step}</span>
+            </div>
+          ))}
         </div>
-
-
-
-        <PricingCard
-          title="FREE PLAN"
-          price="0"
-          desc="Enjoy the free plan with limited usage"
-          features={[
-            "5 component generation/mo",
-            "React export",
-            "Access to all components",
-            "Community support"
-          ]}
-        />
-        <PricingCard
-          title="PRO PLAN"
-          price="5"
-          desc="enjoy the free plan with limited usage this is the text i dont know what else"
-          features={[
-            " Everything in Pro",
-            "Team collaboration",
-            "Custom design tokens",
-            "API access",
-            "Dedicated account manager"
-          ]}
-        />
-        <PricingCard
-          title="TEAM PLAN"
-          price="10"
-          desc="Enjoy the free plan with limited usage"
-          features={[
-            "5 component generation/mo",
-            "React export",
-            "Access to all components",
-            "API access",
-            "Community support"
-          ]}
-        />
-
-        <TestimonialStack />
-        <FAQ />
-        <Footer />
+        <button className="mt-3 w-full bg-purple-600 hover:bg-purple-700 text-white rounded-lg py-2.5 text-xs font-semibold transition-colors">Analyze →</button>
       </div>
-  
     </div>
-          </div>
-  )
+  );
 }
-const Card = ({ topvariant, image, title, desc }) => {
+
+function TrainOverlay() {
+  const metrics = [
+  { label: "Components", value: "24" },
+  { label: "Accuracy", value: "98%" },
+  { label: "Tailwind", value: "Ready" },
+  { label: "ETA", value: "3s" },
+];
   return (
-    <div className={`p-5 h-70 m-5 rounded-2xl bg-linear-to-t to-[#323232] from-[#1A1A1A] from-50% border-t-2 border-white shadow-lg flex flex-col ${!topvariant ? "justify-end items-end" : " flex-col-reverse justify-start items-start"}`}>
-
-      {/* Image */}
-      <div className={`${topvariant ? "ml-auto" : "mr-auto "}`}>
-        <img src={image} alt="photo" />
+    <div className="flex items-center justify-center mb-8 [animation:fadeInOverlay_0.4s_ease-out_forwards] p-4">
+      <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-6 w-full max-w-xs border border-gray-100">
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="text-sm font-semibold text-gray-900">Generate React Components</h3>
+          <span className="text-[11px] font-bold bg-orange-50 text-orange-600 rounded-full px-2 py-0.5 border border-orange-100">Running</span>
+        </div>
+        <p className="text-xs text-gray-500 mb-4">Converting wireframe into clean React + Tailwind code.</p>
+        <div className="bg-gray-100 rounded-full h-1.5 mb-5">
+          <div className="bg-orange-500 h-1.5 rounded-full w-[67%]" />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {metrics.map((m) => (
+            <div key={m.label} className="bg-gray-50 rounded-xl p-3 border border-gray-100">
+              <p className="text-[11px] text-gray-400 mb-0.5">{m.label}</p>
+              <p className={`text-xl font-bold ${m.color}`}>{m.value}</p>
+           </div>
+          ))}
+        </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Text */}
-      <div className="w-50 ">
-        <h1 className="text-white font-bold text-[18px]">
-          {title}
-        </h1>
-        <p className="text-[#BFBFBF] text-[16px]">
-          {desc}
+function TestingOverlay() {
+  const tests = [
+    "Responsive Design",
+    "Accessibility Check",
+    "Component Structure",
+    "Code Validation"
+  ];
+
+  return (
+    <div className="flex items-center justify-center mb-8 [animation:fadeInOverlay_0.4s_ease-out_forwards] p-4">
+      <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-6 w-full max-w-xs border border-gray-100">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+
+          <h3 className="text-sm font-semibold text-gray-900">
+            Live Preview
+          </h3>
+        </div>
+
+        <p className="text-xs text-gray-500 mb-4">
+          Review the generated UI before exporting.
         </p>
-      </div>
 
+        <div className="space-y-2.5">
+          {tests.map((t) => (
+            <div key={t} className="flex items-center justify-between">
+              <span className="text-xs text-gray-700">{t}</span>
+
+              <div className="flex items-center gap-1.5">
+                <div className="w-20 bg-gray-100 rounded-full h-1">
+                  <div className="bg-green-500 h-1 rounded-full w-full" />
+                </div>
+
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 bg-green-50 rounded-xl p-2.5 text-center border border-green-100">
+          <p className="text-xs font-semibold text-green-700">
+            Preview Ready
+          </p>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
+function DeployOverlay() {
+  const checks = [
+    "React Components",
+    "Tailwind Styles",
+    "Assets Included",
+    "Ready to Export"
+  ];
 
-
-
-const PricingCard = ({ title, price, desc, features }) => {
   return (
+    <div className="flex items-center justify-center mb-8 [animation:fadeInOverlay_0.4s_ease-out_forwards] p-4">
+      <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-6 w-full max-w-xs border border-gray-100">
 
-    <div className="p-6 h-125 m-6 mt-10 justify-center rounded-2xl bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f] border-t-2 border-white text-white ">
+        <h3 className="text-sm font-semibold text-gray-900 mb-1">
+          Export Project
+        </h3>
 
-      {/* Title */}
-      <h2 className="text-lg font-semibold">{title}</h2>
+        <p className="text-xs text-gray-500 mb-4">
+          Download production-ready React + Tailwind code.
+        </p>
 
-      {/* Price */}
-      <h1 className="text-4xl font-bold text-orange-400 mt-2">
-        ${price}
-        <span className="text-base text-gray-400">/month</span>
-      </h1>
+        <div className="space-y-2.5">
+          {checks.map((c) => (
+            <div key={c} className="flex items-center gap-2.5">
+              <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 border border-gray-200">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="3">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
 
-      {/* Description */}
-      <p className="text-gray-400 mt-3 text-sm">
-        {desc}
-      </p>
+              <span className="text-xs text-gray-700">
+                {c}
+              </span>
+            </div>
+          ))}
+        </div>
 
-      {/* Button */}
-      <div className="mt-5">
-        <button className="w-full border-t-2 cursor-pointer hover:scale-100 border-white flex items-center justify-between pl-5 h-14 pr-1 rounded-full bg-gradient-to-r from-[#ADADAD] from-50 to-[#444444] text-black font-serif text-[25px] ">
-          Get started
-          <span className="bg-white rounded-full p-5 h-13"><img className="h-4 " src={arrow} alt="arrow" /></span>
+        <button className="mt-4 w-full bg-gray-950 hover:bg-black text-white rounded-lg py-2.5 text-xs font-semibold transition-colors">
+          📦 Export Code
         </button>
+
+      </div>
+    </div>
+  );
+}
+
+const overlays = { draw: AnalyseOverlay, generate: TrainOverlay, preview: TestingOverlay, export: DeployOverlay };
+
+// ── MAIN LANDING PAGE CONTAINER ──
+export default function StellarHero() {
+  const [activeTab, setActiveTab] = useState("draw");
+  const [overlayKey, setOverlayKey] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setActiveTab((prev) => {
+        const idx = TABS.findIndex((t) => t.id === prev);
+        return TABS[(idx + 1) % TABS.length].id;
+      });
+      setOverlayKey((k) => k + 1);
+    }, 4000);
+    return () => clearInterval(id);
+  }, []);
+
+  const handleTabClick = (id) => {
+    setActiveTab(id);
+    setOverlayKey((k) => k + 1);
+  };
+
+  const Overlay = overlays[activeTab];
+  const animateUp = "[animation:fadeInUp_0.6s_ease-out_forwards] opacity-0";
+
+  return (
+    <>
+      <div className="w-full text-gray-900 antialiased font-sans selection:bg-gray-100">
+        
+        <style>{`
+          @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+          @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+        `}</style>
+
+        <Navbar />
+
+        {/* HERO SECTION CONTAINER - Scoped explicitly with relative position and overflow-hidden */}
+        <header className="relative w-full overflow-hidden">
+          
+          {/* Dotgrid Background wrapper: trapped inside the header context */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <Dotgrid />
+          </div>
+
+          {/* Hero Content (Pushed visually above Dotgrid using z-10) */}
+          <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 pb-28 text-center ">
+            
+            {/* Trust Badge */}
+            <div className={`${animateUp} [animation-delay:0.2s] flex justify-center mb-6`}>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-full shadow-sm">
+                <Star className="w-3 h-3 fill-black stroke-none" />
+                <span className="text-xs font-medium text-gray-700">4.9 rating from 18.3K+ users</span>
+              </div>
+            </div>
+
+            {/* Heading */}
+            <div className={`${animateUp} [animation-delay:0.3s] mb-6`}>
+              <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[0.95] text-black">
+                Draw it. Describe it.<br />
+                <span className="bg-gradient-to-r from-black via-gray-500 to-gray-400 bg-clip-text text-transparent">
+                  Deploy it.
+                </span>
+              </h1>
+            </div>
+
+            {/* Subtext */}
+            <div className={`${animateUp} [animation-delay:0.4s] mb-10`}>
+              <p className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto">
+                Generate quick react components for your website using our wireframe to react components generator powered by AI.
+              </p>
+            </div>
+
+            {/* CTA Button */}
+            <div className={`${animateUp} [animation-delay:0.5s] mb-14`}>
+              <button className="bg-black hover:bg-gray-800 text-white rounded-full px-8 py-3 text-base font-medium transition-colors shadow-md">
+                Begin Free Trial
+              </button>
+            </div>
+
+            {/* Navigation Tabs */}
+            <div className={`${animateUp} [animation-delay:0.6s] flex justify-center mb-10`}>
+              <div className="bg-gray-100 border border-gray-200/60 rounded-xl p-1 flex items-center overflow-x-auto max-w-full">
+                {TABS.map(({ id, label, icon: Icon }, i) => (
+                  <div key={id} className="flex items-center flex-shrink-0">
+                    {i > 0 && <div className="w-[1px] h-4 bg-gray-300 mx-1" />}
+                    <button 
+                      onClick={() => handleTabClick(id)} 
+                      className={`flex items-center gap-1.5 px-4 sm:px-5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                        activeTab === id 
+                        ? "bg-white text-black shadow-sm border border-gray-200/40" 
+                        : "bg-transparent text-gray-500 hover:text-black"
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      {label}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* PRESENTATION DISPLAY CONTROLLER */}
+            <div className={`${animateUp} [animation-delay:0.7s] relative rounded-3xl p-0 max-w-4xl mx-auto`}>
+              
+              {/* Backlight Ambient Glow Layers */}
+              <div className="absolute left-1/2 -translate-x-1/2 -top-10 w-[90%] h-full z-0 pointer-events-none overflow-hidden hidden sm:block">
+                <div className="absolute w-[450px] h-[320px] bg-orange-400/20 blur-[80px] -left-[10%] top-0 rounded-full" />
+                <div className="absolute w-[450px] h-[320px] bg-purple-400/20 blur-[80px] left-[20%] top-0 rounded-full" />
+                <div className="absolute w-[450px] h-[320px] bg-blue-400/20 blur-[80px] right-[10%] top-0 rounded-full" />
+              </div>
+
+              {/* Main Presentation Box */}
+              <Overlay key={overlayKey} />
+
+              {/* MARQUEE BRAND SECTION */}
+              <div className={`${animateUp} [animation-delay:0.8s]`}>
+                <div className="mt-20 flex flex-wrap items-center justify-center gap-x-12 gap-y-6 select-none opacity-50">
+                  <span className="text-xs font-bold tracking-[0.15em] uppercase text-gray-800">Interscope</span>
+                  <span className="text-xs font-bold tracking-[0.12em] uppercase text-gray-800">Spotify</span>
+                  <span className="flex items-center gap-1.5 text-xs font-medium text-gray-800">
+                    <span className="grid grid-cols-2 gap-0.5">
+                      {[...Array(4)].map((_, i) => <span key={i} className="w-1 h-1 rounded-full bg-gray-700 block" />)}
+                    </span>
+                    Nexera
+                  </span>
+                  <span className="text-sm font-bold text-gray-800 font-serif italic">M3</span>
+                  <span className="flex items-center gap-1.5 text-xs font-medium tracking-wide uppercase text-gray-800">
+                    <span className="w-4 h-4 rounded-full border border-gray-400 flex items-center justify-center text-[8px] font-bold">LC</span>
+                    Laura Cole
+                  </span>
+                  <span className="flex items-center gap-1 text-xs font-medium text-gray-800">
+                    vertex
+                    {[...Array(3)].map((_, i) => <span key={i} className="w-[3px] h-[3px] rounded-full bg-gray-400 inline-block ml-0.5" />)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Video */}
+              <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border border-gray-200 mt-10">
+                <video
+                  src={Wire}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover scale-110"
+                />
+              </div>
+            </div>
+
+          </div>
+        </header>
+
       </div>
 
-      {/* Features */}
-      <ul className="mt-5 text-gray-400 text-[18] space-y-1">
-        {features.map((item, index) => (
-          <li key={index}>• {item}</li>
-        ))}
-      </ul>
-
-    </div>
-    
+      {/* Rest of the sections completely clear of Dotgrid */}
+      <Precision />
+      <Pricing />
+      <Say />
+      <FAQ />
+      <Footer />
+    </>
   );
-};
-
-
-
-
-export default Home;
+}
