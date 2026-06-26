@@ -1,13 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { Star, ChevronDown, BarChart3, BookOpen, Users, Rocket } from "lucide-react";
+import { Link } from "react-router-dom";
 import Wire from "../assets/wire.mp4";
-import Dotgrid from "../components/Dotgrid";
+// import Dotgrid from "../components/Dotgrid";
 import Precision from "../components/Features";
 import Navbar from "../components/Navbar";
 import Say from "../components/Testimonial"
 import Pricing from "../components/Pricing";
 import FAQ from "../components/FAQ";
 import Footer from "../components/Footer";
+import Tryit from "../components/Tryit";
+import Console from "./Console";
 
 const TABS = [
   { id: "draw", label: "Draw", icon: BarChart3 },
@@ -208,15 +211,17 @@ export default function StellarHero() {
           @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
         `}</style>
 
+        
+
         <Navbar />
 
         {/* HERO SECTION CONTAINER - Scoped explicitly with relative position and overflow-hidden */}
         <header className="relative w-full overflow-hidden">
           
           {/* Dotgrid Background wrapper: trapped inside the header context */}
-          <div className="absolute inset-0 z-0 pointer-events-none">
+          {/* <div className="absolute inset-0 z-0 pointer-events-none">
             <Dotgrid />
-          </div>
+          </div> */}
 
           {/* Hero Content (Pushed visually above Dotgrid using z-10) */}
           <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 pb-28 text-center ">
@@ -247,11 +252,14 @@ export default function StellarHero() {
             </div>
 
             {/* CTA Button */}
-            <div className={`${animateUp} [animation-delay:0.5s] mb-14`}>
-              <button className="bg-black hover:bg-gray-800 text-white rounded-full px-8 py-3 text-base font-medium transition-colors shadow-md">
-                Begin Free Trial
-              </button>
-            </div>
+<div className="mb-14 relative z-[9999]">
+  <button
+    onClick={() => alert("Clicked")}
+    className="bg-black text-white px-8 py-3 rounded-full"
+  >
+    Begin Free Trial
+  </button>
+</div>
 
             {/* Navigation Tabs */}
             <div className={`${animateUp} [animation-delay:0.6s] flex justify-center mb-10`}>
@@ -276,14 +284,13 @@ export default function StellarHero() {
             </div>
 
             {/* PRESENTATION DISPLAY CONTROLLER */}
-            <div className={`${animateUp} [animation-delay:0.7s] relative rounded-3xl p-0 max-w-4xl mx-auto`}>
-              
-              {/* Backlight Ambient Glow Layers */}
-              <div className="absolute left-1/2 -translate-x-1/2 -top-10 w-[90%] h-full z-0 pointer-events-none overflow-hidden hidden sm:block">
-                <div className="absolute w-[450px] h-[320px] bg-orange-400/20 blur-[80px] -left-[10%] top-0 rounded-full" />
-                <div className="absolute w-[450px] h-[320px] bg-purple-400/20 blur-[80px] left-[20%] top-0 rounded-full" />
-                <div className="absolute w-[450px] h-[320px] bg-blue-400/20 blur-[80px] right-[10%] top-0 rounded-full" />
-              </div>
+<div className="relative rounded-3xl p-0 max-w-4xl mx-auto">  
+  {/* FIX: Added pointer-events-none and absolute containment here */}
+  <div className="absolute left-1/2 -translate-x-1/2 -top-10 w-[90%] h-full z-0 pointer-events-none overflow-hidden hidden sm:block">
+    <div className="absolute w-[450px] h-[320px] bg-orange-400/20 blur-[80px] -left-[10%] top-0 rounded-full pointer-events-none" />
+    <div className="absolute w-[450px] h-[320px] bg-purple-400/20 blur-[80px] left-[20%] top-0 rounded-full pointer-events-none" />
+    <div className="absolute w-[450px] h-[320px] bg-blue-400/20 blur-[80px] right-[10%] top-0 rounded-full pointer-events-none" />
+  </div>
 
               {/* Main Presentation Box */}
               <Overlay key={overlayKey} />
@@ -334,6 +341,7 @@ export default function StellarHero() {
       <Pricing />
       <Say />
       <FAQ />
+      <Tryit />
       <Footer />
     </>
   );
