@@ -1,17 +1,31 @@
-import { useRef, useState } from "react"
-import { motion } from "motion/react";
+import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Back from "../../assets/back.png";
-import { OtpVerifyReq } from "../../services/backend/auth";
+import { OtpVerifyReq, ResendOtpReq } from "../../services/backend/auth";
 import useAuth from "../../context/Hooks/AuthHook";
 import { useToast } from "../Toast";
+import AuthShell from "./AuthShell";
+import { AxiosError } from "axios";
+import { errorRedirectHandler } from "../../utils/errors/errorRedirect.config";
+import { LoaderCircle } from "lucide-react";
 
-const OtpVerify = ({ email, endpoint, redirect ,remember}) => {
+const OtpVerify = ({ redirect, challenge }) => {
   const navigate = useNavigate()
   const [otp, setotp] = useState(["", "", "", "", "", ""])
+  const [verifying, setverifying] = useState(false)
+  const [resending, setresending] = useState(false)
+  const [resendIn, setresendIn] = useState(30)
+  const verifyingRef = useRef(false)
+  const resendingRef = useRef(false)
   const inputRefs = useRef([])
   const { setuser } = useAuth()
-  const {showToast} = useToast()
+  const { showToast } = useToast()
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setresendIn((seconds) => (seconds > 0 ? seconds - 1 : 0))
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
 
   function handleChange(index, value) {
     if (value.length > 1) return
@@ -42,78 +56,120 @@ const OtpVerify = ({ email, endpoint, redirect ,remember}) => {
   }
 
   async function HandleVerify() {
+    if (verifyingRef.current) return
+    verifyingRef.current = true
+    setverifying(true)
     try {
-      const data = await OtpVerifyReq(email, otp.join("") ,remember, endpoint )
-      if (data.success) {
-        showToast(data.message, "success", "top-right")
-        setuser(data.data)
-        navigate(redirect)
-      }
+      const data = await OtpVerifyReq(otp.join(""), challenge.current)
+      showToast(data.message, "success", "top-right")
+      setuser(data.data)
+      navigate(redirect)
     } catch (error) {
-      const data = error.response?.data
-      if (data) {
-        const action = data.action
-        if (action == "REDIRECTBACK") {
-          showToast(data.message, "error", "top-right")
-          navigate("/login")
-        }
-        else if (action == "ERROR") {
-          showToast(data.message, "error", "top-right")
-          setotp(["", "", "", "", "", ""])
+      if (error instanceof AxiosError) {
+        const data = error.response?.data
+        showToast(data?.message || "Could not verify the code. Try again.", "error", "top-right")
+        if (data?.redirectTo) {
+          navigate(errorRedirectHandler(data.redirectTo));
         }
       }
+      else {
+        console.error(error);
+      }
+    } finally {
+      verifyingRef.current = false
+      setverifying(false)
+    }
+  }
+
+  async function HandleResend() {
+    if (resendIn > 0 || resendingRef.current) return
+    if (!challenge?.current) {
+      showToast("Your code session expired. Please sign in again.", "error", "top-right")
+      return
+    }
+    resendingRef.current = true
+    setresending(true)
+    try {
+      await ResendOtpReq(challenge.current)
+      showToast("A new code has been sent to your email.", "success", "top-right")
+      setotp(["", "", "", "", "", ""])
+      setresendIn(30)
+      inputRefs.current[0]?.focus()
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const data = error.response?.data
+        showToast(data?.message || "Could not resend the code. Try again.", "error", "top-right")
+        if (data?.redirectTo) {
+          navigate(errorRedirectHandler(data.redirectTo));
+        }
+      }
+      else {
+        showToast("Could not resend the code. Try again.", "error", "top-right")
+        console.error(error);
+      }
+    } finally {
+      resendingRef.current = false
+      setresending(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-6 pt-8">
+    <AuthShell
+      title="Verify OTP"
+      note="Enter the 6-digit code sent to your email"
+      step={2}
+      onClick={() => navigate("/login")}
+      panelLabel="Verify your email"
+    >
+      <div className="auth-code" role="group" aria-label="One-time passcode">
+        {otp.map((digit, index) => (
+          <input
+            key={index}
+            ref={(el) => { inputRefs.current[index] = el }}
+            type="text"
+            inputMode="numeric"
+            maxLength={1}
+            value={digit}
+            aria-label={`Digit ${index + 1}`}
+            onChange={(e) => handleChange(index, e.target.value)}
+            onKeyDown={(e) => handleKeyDown(index, e)}
+            onPaste={index === 0 ? handlePaste : undefined}
+          />
+        ))}
+      </div>
+
       <button
         type="button"
-        onClick={() => navigate("/login")}
-        className="mb-16 cursor-pointer"
+        disabled={otp.join("").length !== 6 || verifying}
+        aria-busy={verifying}
+        className="auth-primary auth-verify"
+        onClick={HandleVerify}
       >
-        <img src={Back} alt="Back" className="w-10 h-10" />
+        {verifying ? (
+          <>
+            <LoaderCircle className="auth-spinner" size={16} aria-hidden="true" />
+            Verifying…
+          </>
+        ) : "Verify"}
       </button>
 
-      <div className="max-w-md mx-auto">
-        <div className="text-center">
-          <h1 className="text-[32px] font-serif font-bold text-gray-900">
-            Verify OTP
-          </h1>
-          <p className="text-gray-500 mt-2 text-sm">
-            Enter the 6-digit code sent to your email
-          </p>
-        </div>
-
-        <div className="mt-8 flex justify-center gap-3">
-          {otp.map((digit, index) => (
-            <input
-              key={index}
-              ref={(el) => { inputRefs.current[index] = el }}
-              type="text"
-              inputMode="numeric"
-              maxLength={1}
-              value={digit}
-              onChange={(e) => handleChange(index, e.target.value)}
-              onKeyDown={(e) => handleKeyDown(index, e)}
-              onPaste={index === 0 ? handlePaste : undefined}
-              className="w-14 h-16 text-center text-xl font-bold rounded-xl bg-white border border-gray-300 text-gray-800 outline-none focus:ring-2 focus:ring-orange-400"
-            />
-          ))}
-        </div>
-
-        <motion.button
-          whileHover={{ scale: 1.025 }}
-          whileTap={{ scale: 0.975 }}
+      <div className="auth-resend-row">
+        <span>Didn’t get the code?</span>
+        <button
           type="button"
-          disabled={otp.join("").length !== 6}
-          className="w-full h-16 bg-[#FF9B51] rounded-full mt-8 text-black text-2xl font-bold font-serif cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-          onClick={HandleVerify}
+          className="auth-resend"
+          disabled={resendIn > 0 || resending}
+          onClick={HandleResend}
         >
-          Verify
-        </motion.button>
+          {resending ? (
+            <>
+              <LoaderCircle className="auth-spinner" size={14} aria-hidden="true" />
+              Sending…
+            </>
+          ) : resendIn > 0 ? `Resend in ${resendIn}s` : "Resend code"}
+        </button>
       </div>
-    </div>
+    </AuthShell>
   )
 }
 

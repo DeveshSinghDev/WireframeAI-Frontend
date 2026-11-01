@@ -4,16 +4,15 @@ const url = "http://localhost:3000"
 axios.defaults.withCredentials = true;
 
 async function FetchUserData() {
-  const response = await axios.get(`${url}/user`, {
-    withCredentials: true
-  })
-  return response.data
+  const response = await axios.get(`${url}/user`);
+  return response.data;
 }
 
-async function LoginReq(email, password) {
+async function LoginReq(email, password, remember) {
   const response = await axios.post(`${url}/auth/login`, {
     email: email,
-    password: password
+    password: password,
+    remember: remember
   })
   return response.data
 }
@@ -27,11 +26,32 @@ async function SignupReq(name, email, password) {
   return response.data
 }
 
-async function OtpVerifyReq(email, otp, remember, endpoint) {
-  const response = await axios.post(`${url}${endpoint}`, {
-    email: email,
+async function OtpVerifyReq(otp, challenge) {
+  const response = await axios.post(`${url}/auth/verify/otpchallenge`, {
     otp: otp,
-    remember: remember,
+    challenge: challenge
+  })
+  return response.data
+}
+
+async function ResendOtpReq(challenge) {
+  const response = await axios.post(`${url}/auth/otp/resend-request`, {
+    challenge: challenge
+  })
+  return response.data
+}
+
+async function ForgotPasswordReq(email) {
+  const response = await axios.post(`${url}/auth/forgot-password`, {
+    email: email
+  })
+  return response.data
+}
+
+async function ResetPasswordReq(newPassword, session) {
+  const response = await axios.post(`${url}/auth/password-reset`, {
+    newPassword: newPassword,
+    session: session
   })
   return response.data
 }
@@ -40,4 +60,4 @@ async function LogOutReq() {
   const response = await axios.post(`${url}/auth/logout`)
   return response.data
 }
-export { FetchUserData, LoginReq, SignupReq, OtpVerifyReq, LogOutReq }
+export { FetchUserData, ResetPasswordReq, LoginReq, SignupReq, OtpVerifyReq, ResendOtpReq, ForgotPasswordReq, LogOutReq }

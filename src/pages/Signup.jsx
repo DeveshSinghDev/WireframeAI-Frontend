@@ -1,174 +1,163 @@
 import { Link, Navigate, useSearchParams } from "react-router-dom";
-import Back from "../assets/back.png";
 import { useNavigate } from "react-router-dom";
 import Google from "../assets/google.png";
 import useAuth from "../context/Hooks/AuthHook";
 import { SignupReq } from "../services/backend/auth";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import OtpVerify from "../components/Auth/OtpVerify";
 import { useToast } from "../components/Toast";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, LoaderCircle } from "lucide-react";
+import AuthShell from "../components/Auth/AuthShell";
+import { AxiosError } from "axios";
+import { errorRedirectHandler } from "../utils/errors/errorRedirect.config";
 
 function Signup() {
   const [searchparams] = useSearchParams()
   const step = searchparams.get('step')
-  const email = searchparams.get('email')
   const navigate = useNavigate();
-  const { user } = useAuth()
+  const { user, challenge } = useAuth()
   if (user) {
     return <Navigate to={"/dashboard"} />
   } else {
     return (
       <>
-        {step == 'otp' ?
-          <OtpVerify email={email} endpoint={"/auth/signup/verify"} redirect={"/dashboard"} /> : <SignupForm navigate={navigate} />}
+        {step == 'otp' && challenge.current ?
+          <OtpVerify redirect={"/dashboard"} challenge={challenge} /> : <SignupForm navigate={navigate} challenge={challenge} />}
       </>
     );
   }
 }
 
-const SignupForm = ({ navigate }) => {
+const SignupForm = ({ navigate, challenge }) => {
   const [name, setname] = useState("")
   const [email, setemail] = useState("")
   const [password, setpassword] = useState("")
   const [showPassword, setshowPassword] = useState(false)
+  const [loading, setloading] = useState(false)
+  const submitting = useRef(false)
   const { showToast } = useToast()
 
   async function handleSignup(e) {
     e.preventDefault()
+    if (submitting.current) return
+    submitting.current = true
+    setloading(true)
     try {
-      const data = await SignupReq(name, email, password)
-      if (data.success) {
-        showToast(data.message, "success", "top-right")
-        navigate(`/signup?step=otp&email=${email}`)
-      }
+      const data = await SignupReq(name, email, password);
+      challenge.current = data.challenge;
+      showToast(data.message, "success", "top-right");
+      navigate(`/signup?step=otp`);
     } catch (error) {
-      const data = error.response?.data
-      data ? showToast(data.message, "error", "top-right") : showToast("Some error occured", "error", "top-right");
+      if (error instanceof AxiosError) {
+        const data = error.response?.data
+        showToast(data?.message || "Some error occured", "error", "top-right")
+        if (data?.redirectTo) {
+          navigate(errorRedirectHandler(data.redirectTo));
+        }
+      }
+      else {
+        showToast("Some error occured", "error", "top-right")
+        console.error(error);
+      }
+    } finally {
+      submitting.current = false
+      setloading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-6 pt-8">
-      {/* Back Button */}
-      <button
-        type="button"
-        onClick={() => navigate("/")}
-        className="mb-16 cursor-pointer"
-      >
-        <img
-          src={Back}
-          alt="Back"
-          className="w-10 h-10"
-        />
-      </button>
-
-      <div className=" max-w-md mx-auto">
-
-        {/* Heading */}
-        <div className="text-center">
-          <h1 className="text-[35px] font-bold font-serif text-gray-900">
-            Create an Account
-          </h1>
-
-          <p className=" text-[15px]">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="text-orange-400 font-semibold"
-            >
-              Login
-            </Link>
-          </p>
-        </div>
-
-        {/* Form */}
-        <form className="mt-8 space-y-5" onSubmit={handleSignup}>
+    <AuthShell
+      title="Create an Account"
+      onClick={() => navigate("/")}
+      step={1}
+      panelLabel="Sign up form"
+      note={<>Already have an account? <Link to="/login" className="auth-link auth-link--strong">Login</Link></>}
+    >
+      <form className="auth-form" onSubmit={handleSignup}>
+        <div className="auth-field">
+          <label className="auth-label" htmlFor="signup-name">Enter Name</label>
           <input
+            id="signup-name"
+            name="name"
             type="text"
+            autoComplete="name"
             placeholder="Enter Name"
             value={name ? name : ""}
             onChange={e => setname(e.target.value)}
             minLength={5}
             required
-            className="w-full py-5 px-8 rounded-full bg-white border border-gray-300 text-gray-800 placeholder:text-gray-500 outline-none focus:ring-2 focus:ring-orange-400"
+            className="auth-input"
           />
+        </div>
 
+        <div className="auth-field">
+          <label className="auth-label" htmlFor="signup-email">Email address</label>
           <input
+            id="signup-email"
+            name="email"
             type="email"
-            placeholder="Email address"
+            autoComplete="email"
+            placeholder="name@example.com"
             value={email ? email : ""}
             onChange={e => setemail(e.target.value)}
             required
-            className="w-full py-5 px-8 rounded-full bg-white border border-gray-300 text-gray-800 placeholder:text-gray-500 outline-none focus:ring-2 focus:ring-orange-400"
+            className="auth-input"
           />
-          <div className="relative">
+        </div>
+
+        <div className="auth-field">
+          <label className="auth-label" htmlFor="signup-password">Password</label>
+          <div className="auth-field__control">
             <input
+              id="signup-password"
+              name="password"
               type={showPassword ? "text" : "password"}
-              placeholder="Password"
+              autoComplete="new-password"
               value={password ? password : ""}
               onChange={e => setpassword(e.target.value)}
               required
-              className="w-full py-5 px-8 rounded-full bg-white border border-gray-300 text-gray-800 placeholder:text-gray-500 outline-none focus:ring-2 focus:ring-orange-400"
+              className="auth-input auth-input--reveal"
             />
             <button
               type="button"
               onClick={() => setshowPassword(!showPassword)}
-              className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-pressed={showPassword}
+              className="auth-reveal"
             >
-              {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
+              {showPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
             </button>
           </div>
-
-          <button className="w-full py-4 mt-3 rounded-full bg-[#FF9B51] border-t-2 border-white 
-          text-black text-2xl font-serif font-bold cursor-pointer"
-            type="submit"
-          >
-            Continue
-          </button>
-        </form>
-
-        {/* Divider */}
-        <div className="flex items-center gap-3 mt-6">
-          <div className="flex-1 h-[1px] bg-gray-300"></div>
-          <span className="text-gray-500">
-            or sign up with
-          </span>
-          <div className="flex-1 h-[1px] bg-gray-300"></div>
         </div>
 
-        {/* Google Login */}
-        <div className="flex justify-center mt-6">
-          <button
-            type="button"
-            className="w-16 h-16 cursor-pointer bg-white border border-gray-300 rounded-2xl flex items-center justify-center hover:shadow-md transition"
-          >
-            <img
-              src={Google}
-              alt="Google"
-              className="w-8 h-8"
-            />
-          </button>
-        </div>
+        <button className="auth-primary" type="submit" disabled={loading} aria-busy={loading}>
+          {loading ? (
+            <>
+              <LoaderCircle className="auth-spinner" size={16} aria-hidden="true" />
+              Creating account…
+            </>
+          ) : "Continue"}
+        </button>
 
-        <div className=" text-[13px] mt-30 text-center">
-          By clicking on continue you agree to recognotes <br /> our{" "}
-          <Link
-            to="/term"
-            className="text-orange-400 underline"
-          >
-            Terms of Use
-          </Link>{" "}
-          and{" "}
-          <Link
-            to="/privacy"
-            className="text-orange-400 underline"
-          >
-            Privacy Policy
-          </Link>
-        </div>
-      </div>
-    </div>
+        <p className="auth-or">or sign up with</p>
+
+        <button type="button" className="auth-quiet">
+          <img src={Google} alt="" width="18" height="18" />
+          Google
+        </button>
+      </form>
+
+      <p className="auth-legal">
+        By clicking on continue you agree to recognotes our{" "}
+        <Link to="/term" className="auth-link">
+          Terms of Use
+        </Link>{" "}
+        and{" "}
+        <Link to="/privacy" className="auth-link">
+          Privacy Policy
+        </Link>
+      </p>
+    </AuthShell>
   )
 }
 export default Signup;
