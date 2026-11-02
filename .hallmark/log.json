@@ -1,5 +1,29 @@
 [
  {
+  "mode": "build",
+  "scope": "app",
+  "theme": "ribbon",
+  "shape": "app-screen",
+  "axes": "two-step rail beside a machined form panel",
+  "hero": "none, app screen: title left, error panel right",
+  "nav": "edge-aligned wordmark and Back control",
+  "footer": "none, the machined panel closes the screen",
+  "imagery": "none; the query message is the content",
+  "photos": [],
+  "entry": "Google OAuth error at /oauth/error and /auth/error",
+  "fingerprint": "oauth-error|split-5-7|machined-panel|query-message|quiet-ground",
+  "sections": [
+   "Auth shell",
+   "Error state",
+   "Recovery"
+  ],
+  "signature": "the query error set inside the same machined auth panel as login",
+  "waived": [],
+  "prompt": "use the ribbon auth theme for a simple Google OAuth error page whose message comes from ?message",
+  "sweep": "sloplint clean: 0 FAIL, 0 REFLEX, 0 WARN; query, fallback, and 400-char message checked at 375/1280/1440; build passes with pre-existing chunk warnings",
+  "date": "2026-11-02"
+ },
+ {
   "mode": "redesign",
   "depth": "full",
   "scope": "app",
@@ -23,5 +47,36 @@
   "prompt": "redesign the login and sign up page using the ribbon theme",
   "sweep": "sloplint clean: 0 FAIL, 0 REFLEX, 0 WARN; kept 10/10 handlers, 6/6 links, 4/4 fields",
   "date": "2026-10-29"
+ },
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "home page",
+  "theme": "ribbon",
+  "shape": "atmospheric workbench landing",
+  "axes": "workbench split, process rail, editable code panel",
+  "hero": "split: copy on five columns, product capture on seven",
+  "nav": "floating pill, explicit shared routes, mobile sheet",
+  "footer": "two-panel mast over the oversized Wireframe AI watermark",
+  "imagery": "wire.mp4 capture with a generated ffmpeg poster; no stock photography",
+  "photos": [],
+  "entry": "Home; shared Navbar and Footer on About and Blog",
+  "fingerprint": "home|split-5-7|workbench|capture|ribbon",
+  "sections": [
+   "Hero",
+   "Process",
+   "Code output",
+   "Pricing",
+   "FAQ",
+   "Start"
+  ],
+  "signature": "a wireframe capture becoming editable React, set inside the Ribbon workbench",
+  "waived": [
+   "src/components/Testimonial.jsx is unused and was left untouched, so it sits outside this run's kept comparison"
+  ],
+  "prompt": "redesign the home page using the ribbon theme",
+  "sweep": "sloplint: 0 FAIL, 0 REFLEX, 0 NOTE; 1 kept WARN (Testimonial not compared); kept links 20/20, fields 1/1, handlers 1/1, headings 5/18, figures 4/5",
+  "date": "2026-10-31",
+  "followup": "Expanded hero and pricing spacing; removed the video time label and kept loop playback; rebuilt Process as an interactive sketch/describe/generate/ship stage; added the FAQ export answer."
  }
 ]

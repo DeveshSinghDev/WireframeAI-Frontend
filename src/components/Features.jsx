@@ -1,292 +1,164 @@
+import { useState } from "react";
+import { Check, FileCode2, MousePointer2 } from "lucide-react";
 
-
-const LOGO_ICON =
-  'https://cdn.prod.website-files.com/6720dd1ab6df0da205830ab1/6870f623cf3df417ce45df05_icon%20logo%20eternacloud.png';
-
-const LINE_GRADIENT =
-  'linear-gradient(rgb(28, 78, 255), rgb(254, 136, 27) 0%, rgb(172, 36, 255) 25%, rgb(247, 159, 255) 50%, rgb(255, 214, 0) 66%, rgb(254, 136, 27) 84%, rgba(254, 136, 27, 0) 102%)';
-
-const PILLARS = [
-  { label: 'Sketch',    items: ['layout', 'structure', 'spacing', 'breakpoints'],       leftVw: 2.8,  bottomVw: 7     },
-  { label: 'Describe',  items: ['components', 'variants', 'props', 'interactions'],      leftVw: 22.4, bottomVw: 9.08  },
-  { label: 'Generate',  items: ['TypeScript', 'Tailwind', 'Shadcn', 'best practices'],  leftVw: 41.2, bottomVw: 11.16 },
-  { label: 'Ship',      items: ['export', 'integrate', 'iterate', 'deploy'],             leftVw: 61.1, bottomVw: 13.24 },
+const STEPS = [
+  {
+    id: "sketch",
+    label: "Sketch",
+    body: "Drop a wireframe. The grid, spacing and breakpoints come through.",
+    caption: "The layout arrives as boxes and rules.",
+    alt: "A wireframe sheet with a navigation bar, a hero block and three cards.",
+  },
+  {
+    id: "describe",
+    label: "Describe",
+    body: "Name the components, variants, props and states you want.",
+    caption: "Annotations name the parts before code.",
+    alt: "The wireframe annotated with hero, grid and state notes.",
+  },
+  {
+    id: "generate",
+    label: "Generate",
+    body: "Get typed React and Tailwind with the states wired.",
+    caption: "The component is typed, not guessed.",
+    alt: "A generated React component shown in a code panel.",
+  },
+  {
+    id: "ship",
+    label: "Ship",
+    body: "Export the files, drop them in and keep editing.",
+    caption: "The same screen, ready to edit.",
+    alt: "The finished screen filled in and marked ready.",
+  },
 ];
 
- function FeaturesSection() {
+const DEMO_CODE = [
+  [["key", "export default function"], ["name", " Landing"], ["punc", "() {"]],
+  [["punc", "  return ("]],
+  [["punc", "    <"], ["key", "section"], ["str", ' className="hero"'], ["punc", ">"]],
+  [["punc", "      <"], ["key", "h1"], ["punc", ">"], ["text", "Wireframes in. React out."], ["punc", "</"], ["key", "h1"], ["punc", ">"]],
+  [["punc", "      <"], ["key", "Button"], ["punc", ">"], ["text", "Start free"], ["punc", "</"], ["key", "Button"], ["punc", ">"]],
+  [["punc", "    </"], ["key", "section"], ["punc", ">"]],
+  [["punc", "  );"]],
+  [["punc", "}"]],
+];
+
+function WireframeSheet({ mode }) {
   return (
-    
-    <section
-      style={{
-        backgroundImage: `url("https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260418_125638_553b96dc-a1fd-4b2b-81a9-ed7daa80006e.png&w=1280&q=85")`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-        padding: 'clamp(48px, 8vw, 120px) clamp(16px, 4vw, 60px) clamp(48px, 5.56vw, 80px)',
-        gap: 'clamp(32px, 4vw, 56px)',
-      }}
-    >
-
-      
-      {/* Block 1 — Header */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 36 }}>
-
-        {/* Badge pill */}
-        <div
-          style={{
-            backgroundColor: 'rgb(249, 249, 249)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            fontSize: 'clamp(14px, 1.1vw, 18px)',
-            fontWeight: 500,
-            borderRadius: 36,
-            padding: 'clamp(8px, 0.9vw, 14px) clamp(12px, 1.25vw, 20px)',
-            color: 'rgb(26, 11, 84)',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <svg width="19" height="18" viewBox="0 0 17 16" fill="none" style={{ flexShrink: 0 }}>
-            <g clipPath="url(#prec-clip)">
-              <circle cx="8.5" cy="8" r="7" stroke="#c86fff" fill="none" />
-              <path d="M9.5 11.5V10.5H7.5V11.5H9.5ZM7.5 14.5C7.5 15.0523 7.94772 15.5 8.5 15.5C9.05228 15.5 9.5 15.0523 9.5 14.5H7.5ZM8.5 11.5H7.5V14.5H8.5H9.5V11.5H8.5Z" fill="rgb(200, 111, 255)" />
-              <path d="M12 7H11V9H12V7ZM15 9C15.5523 9 16 8.55228 16 8C16 7.44772 15.5523 7 15 7V9ZM12 8V9H15V8V7L12 7V8Z" fill="rgb(200, 111, 255)" />
-              <path d="M5 9H6V7H5V9ZM2 7C1.44772 7 1 7.44772 1 8C1 8.55228 1.44772 9 2 9V7ZM5 8V7H2V8V9H5V8Z" fill="rgb(200, 111, 255)" />
-              <path d="M7.5 4.5V5.5H9.5V4.5H7.5ZM9.5 1.5C9.5 0.947715 9.05228 0.5 8.5 0.5C7.94772 0.5 7.5 0.947715 7.5 1.5H9.5ZM8.5 4.5H9.5V1.5H8.5H7.5V4.5H8.5Z" fill="rgb(200, 111, 255)" />
-            </g>
-            <defs>
-              <clipPath id="prec-clip">
-                <rect width="16" height="16" fill="white" transform="translate(0.5)" />
-              </clipPath>
-            </defs>
-          </svg>
-          AI-Powered Workflow
-        </div>
-
-        {/* Heading + subtext */}
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            maxWidth: 'clamp(700px, 60vw, 900px)',
-            gap: 22,
-          }}
-        >
-          <h2
-            style={{
-              fontSize: 'clamp(28px, 4vw, 56px)',
-              fontWeight: 500,
-              color: 'rgb(26, 11, 84)',
-              lineHeight: 1.15,
-              margin: 0,
-            }}
-          >
-            <span className="sm:whitespace-nowrap" style={{ display: 'block' }}>
-              One wireframe, infinite components.
-            </span>
-            <span
-              style={{
-                backgroundImage: 'linear-gradient(90deg, rgb(43, 167, 255), rgb(202, 69, 255) 50%, rgb(254, 136, 27))',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                color: 'transparent',
-                paddingBottom: '0.3vw',
-                display: 'block',
-              }}
-            >
-              From sketch to production code.
-            </span>
-          </h2>
-          <p style={{ fontSize: 'clamp(15px, 1.2vw, 20px)', color: 'rgb(169, 151, 206)', margin: 0 }}>
-            WireframeAI transforms your wireframes into clean, typed React components — ready to ship in minutes, not days.
-          </p>
-        </div>
+    <div className={`wf wf--${mode}`} aria-hidden="true">
+      <div className="wf__nav">
+        <span className="wf__mark" />
+        <span className="wf__line wf__line--nav" />
+        <span className="wf__line wf__line--nav wf__line--short" />
+        <span className="wf__line wf__line--nav wf__line--short" />
       </div>
 
-      {/* Block 2 — Pillars */}
-      <div style={{ width: '100%', maxWidth: '82.292vw', margin: '0 auto' }}>
+      <div className="wf__hero">
+        <span className="wf__line wf__line--xl" />
+        <span className="wf__line wf__line--lg" />
+        <span className="wf__line wf__line--md" />
+        <span className="wf__action" />
+      </div>
+      <MousePointer2 className="wf__cursor" size={18} aria-hidden="true" />
 
-        {/* Desktop staircase */}
-        <div
-          className="hidden sm:block"
-          style={{
-            position: 'relative',
-            width: '82.292vw',
-            height: '31.94vw',
-            color: 'rgb(26, 11, 84)',
-          }}
-        >
-          {PILLARS.map((pillar) => (
-            <div
-              key={pillar.label}
-              style={{
-                position: 'absolute',
-                bottom: `${pillar.bottomVw}vw`,
-                left: `${pillar.leftVw}vw`,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundImage: 'linear-gradient(135deg, rgb(255, 255, 255), rgba(255, 255, 255, 0.6))',
-                  fontSize: 18,
-                  fontWeight: 500,
-                  borderRadius: 20,
-                  paddingTop: '0.972vw',
-                  paddingBottom: '0.972vw',
-                  paddingLeft: '1.736vw',
-                  paddingRight: '1.736vw',
-                  whiteSpace: 'nowrap',
-                  gap: 8,
-                }}
-              >
-                <img src={LOGO_ICON} alt="" style={{ width: '1.111vw', height: 'auto', display: 'inline-block' }} />
-                {pillar.label}
-              </div>
+      <div className="wf__grid">
+        {[0, 1, 2].map((card) => (
+          <div className="wf__card" key={card}>
+            <span className="wf__line wf__line--sm" />
+            <span className="wf__line wf__line--xs" />
+            <span className="wf__line wf__line--xs" />
+          </div>
+        ))}
+      </div>
 
-              <div
-                style={{
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'flex-end',
-                }}
-              >
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '0.56vw',
-                    left: '1.94vw',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 4,
-                    fontSize: 16,
-                    alignItems: 'flex-start',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  {pillar.items.map((item) => (
-                    <div
-                      key={item}
-                      style={{
-                        paddingTop: '0.69vw',
-                        paddingBottom: '0.69vw',
-                        paddingLeft: '1.04vw',
-                        paddingRight: '1.04vw',
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                      }}
-                    >
-                      {item}
-                    </div>
-                  ))}
-                </div>
-                <div
-                  style={{
-                    backgroundImage: LINE_GRADIENT,
-                    width: 1,
-                    height: '14.24vw',
-                  }}
-                />
-              </div>
-            </div>
+      {mode === "describe" && (
+        <>
+          <span className="wf__pin wf__pin--hero">Hero</span>
+          <span className="wf__pin wf__pin--grid">Grid</span>
+          <span className="wf__pin wf__pin--states">States</span>
+        </>
+      )}
+
+      {mode === "ship" && (
+        <span className="wf__ready">
+          <Check size={13} aria-hidden="true" />
+          Ready
+        </span>
+      )}
+    </div>
+  );
+}
+
+function CodeSheet() {
+  return (
+    <div className="code-demo" aria-hidden="true">
+      <div className="code-demo__bar">
+        <span className="code-demo__file">
+          <FileCode2 size={14} aria-hidden="true" />
+          Landing.jsx
+        </span>
+        <span>tsx</span>
+      </div>
+      <pre>
+        <code>
+          {DEMO_CODE.map((line, lineIndex) => (
+            <span className="code-line" key={lineIndex}>
+              {line.map(([kind, text], tokenIndex) => (
+                <span className={`tok-${kind}`} key={tokenIndex}>{text}</span>
+              ))}
+            </span>
           ))}
+        </code>
+      </pre>
+    </div>
+  );
+}
+
+function FeaturesSection() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const active = STEPS[activeIndex];
+
+  return (
+    <section id="how" className="section section--tint" aria-labelledby="how-title">
+      <div className="shell">
+        <div className="section-head">
+          <h2 id="how-title">From sketch to shipped.</h2>
+          <p>Four passes, one flow, no handoff.</p>
         </div>
 
-        {/* Mobile alternating flow */}
-        <div
-          className="flex flex-col sm:hidden w-full"
-          style={{ color: 'rgb(26, 11, 84)', gap: 0 }}
-        >
-          {PILLARS.map((pillar, index) => {
-            const isRight = index % 2 !== 0;
-            return (
-              <div
-                key={pillar.label}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: isRight ? 'flex-end' : 'flex-start',
-                  width: '100%',
-                  paddingBottom: 8,
-                }}
-              >
-                <div
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    backgroundImage: 'linear-gradient(135deg, rgb(255, 255, 255), rgba(255, 255, 255, 0.6))',
-                    fontSize: 15,
-                    fontWeight: 500,
-                    borderRadius: 20,
-                    padding: '10px 18px',
-                    whiteSpace: 'nowrap',
-                    gap: 7,
-                  }}
+        <div className="process-stage" id="prec-clip">
+          <div className="step-rail" aria-label="Generation steps">
+            {STEPS.map((step, index) => (
+              <div className="step-item" data-active={index === activeIndex} key={step.id}>
+                <button
+                  type="button"
+                  className="step"
+                  aria-pressed={index === activeIndex}
+                  aria-controls="how-stage"
+                  aria-describedby={`step-body-${step.id}`}
+                  onClick={() => setActiveIndex(index)}
                 >
-                  <img src={LOGO_ICON} alt="" style={{ width: 16, height: 'auto' }} />
-                  {pillar.label}
-                </div>
-
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: isRight ? 'row-reverse' : 'row',
-                    alignItems: 'stretch',
-                    width: '100%',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 1,
-                      flexShrink: 0,
-                      backgroundImage: LINE_GRADIENT,
-                      marginLeft: isRight ? 0 : 22,
-                      marginRight: isRight ? 22 : 0,
-                      minHeight: 120,
-                    }}
-                  />
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 0,
-                      paddingLeft: isRight ? 0 : 20,
-                      paddingRight: isRight ? 20 : 0,
-                      paddingTop: 8,
-                      paddingBottom: 8,
-                      alignItems: isRight ? 'flex-end' : 'flex-start',
-                    }}
-                  >
-                    {pillar.items.map((item) => (
-                      <div
-                        key={item}
-                        style={{ fontSize: 14, color: 'rgb(100, 80, 160)', padding: '8px 0' }}
-                      >
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                  <span className="step__index">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="step__label">{step.label}</span>
+                </button>
+                <p className="step__body" id={`step-body-${step.id}`}>{step.body}</p>
               </div>
-            );
-          })}
+            ))}
+          </div>
+
+          <div className="stage" id="how-stage">
+            <div className="stage__bar">
+              <span className="stage__step">{String(activeIndex + 1).padStart(2, "0")} / 04</span>
+              <span className="stage__label">{active.label} preview</span>
+            </div>
+            <div className="stage__view" role="img" aria-label={active.alt}>
+              {active.id === "generate" ? <CodeSheet /> : <WireframeSheet mode={active.id} />}
+            </div>
+            <p className="stage__caption" aria-live="polite">{active.caption}</p>
+          </div>
         </div>
 
+        <p className="process__foot">Structure, states, types and editable files survive every pass.</p>
       </div>
     </section>
   );

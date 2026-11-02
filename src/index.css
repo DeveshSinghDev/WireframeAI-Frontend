@@ -6,7 +6,9 @@
   background-position: center;
   background-size: cover;
 }
-
+html{
+  scroll-behavior: smooth;
+}
 :root {
  --border: hsl(220 19% 53%);
   --border-light: hsl(0 0 100%);
