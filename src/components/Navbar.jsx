@@ -1,85 +1,68 @@
+import { useEffect, useId, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-
+import { Menu, X } from "lucide-react";
 
 function Navbar() {
+  const [open, setOpen] = useState(false);
+  const menuId = useId();
+  const toggleRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <header className="site-nav">
+      <nav className="shell site-nav__inner" aria-label="Primary">
+        <Link className="site-nav__brand" to="/">WireframeAI</Link>
 
-        <Link
-          to="/"
-          className="flex items-center gap-2 cursor-pointer"
-        >
-
-          <span className="text-lg font-semibold text-black">
-            WireframeAI
-          </span>
-        </Link>
-
-
-        <div className="hidden md:flex items-center gap-8">
-
-          <Link
-            to="/"
-            className="flex items-center gap-1 text-sm text-gray-600 hover:text-black transition hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
-          >
-            Home
-
-          </Link>
-
-          <Link
-            to="/Blog"
-            className="flex items-center gap-1 text-sm text-gray-600 hover:text-black transition hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
-          >
-            Blog
-
-          </Link>
-
-          <Link
-            to="/Pricing"
-            className="flex items-center gap-1 text-sm text-gray-600 hover:text-black transition hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
-          >
-            Pricing
-
-          </Link>
-
-          <Link
-            to="/about"
-            className="text-sm text-gray-600 hover:text-black hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
-          >
-            About Us
-          </Link>
-
-          <Link
-            to="/components"
-            className="text-sm text-gray-600 hover:text-black transition hover:-translate-y-0.5 transition-all duration-300 cursor-pointer"
-          >
-            Components
-          </Link>
-
+        <div className="site-nav__links">
+          <Link className="site-nav__link" to="/#product">Product</Link>
+          <Link className="site-nav__link" to="/#how">How it works</Link>
+          <Link className="site-nav__link" to="/#pricing">Pricing</Link>
+          <Link className="site-nav__link" to="/components">Components</Link>
+          <Link className="site-nav__link" to="/Blog">Blog</Link>
+          <Link className="site-nav__link" to="/about">About</Link>
         </div>
 
-
-        <div className="flex items-center gap-4">
-
-          <Link
-            to="/login"
-            className="text-sm font-bold text-gray-600 hover:text-black transition hover:-translate-y-0.5 transition-all duration-400 cursor-pointer"
+        <div className="site-nav__actions">
+          <Link className="site-nav__login" to="/login">Login</Link>
+          <Link className="site-nav__cta" to="/signup">Sign up</Link>
+          <button
+            ref={toggleRef}
+            type="button"
+            className="site-nav__toggle"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            aria-controls={menuId}
+            onClick={() => setOpen((value) => !value)}
           >
-            Login
-          </Link>
-
-          <Link
-            to="/signup"
-            className="bg-black font-bold text-white px-5 py-2 rounded-3xl text-sm font-medium hover:bg-gray-800 transition cursor-pointer transition hover:-translate-y-1 transition-all duration-400"
-          >
-            Sign Up
-          </Link>
-
+            {open ? <X size={18} aria-hidden="true" /> : <Menu size={18} aria-hidden="true" />}
+          </button>
         </div>
 
-      </div>
-    </nav>
+        {open && (
+          <div className="site-nav__menu" id={menuId}>
+            <Link to="/#product" onClick={() => setOpen(false)}>Product</Link>
+            <Link to="/#how" onClick={() => setOpen(false)}>How it works</Link>
+            <Link to="/#pricing" onClick={() => setOpen(false)}>Pricing</Link>
+            <Link to="/components" onClick={() => setOpen(false)}>Components</Link>
+            <Link to="/Blog" onClick={() => setOpen(false)}>Blog</Link>
+            <Link to="/about" onClick={() => setOpen(false)}>About</Link>
+            <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
+            <Link to="/signup" onClick={() => setOpen(false)}>Sign up</Link>
+          </div>
+        )}
+      </nav>
+    </header>
   );
 }
 

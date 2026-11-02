@@ -1,0 +1,22 @@
+{
+  "scanned": "2026-11-02",
+  "findings": {
+    "fonts": "Figtree + Instrument Sans + JetBrains Mono (index.html L10, tokens.css L36-38)",
+    "palette": "OKLCH Ribbon tokens on :root (tokens.css L19-33)",
+    "motion": "CSS transitions + motion 12 (package.json L22)",
+    "spacing": "4pt scale (tokens.css L47-58)",
+    "framework": "Vite 8 + React 19 + React Router 7 (package.json L24-27, App.jsx L3-28)",
+    "auth": "Google starts at /auth/google; login route is /login (Login.jsx L42-44, App.jsx L36-37)"
+  },
+  "preserve": [
+    "existing auth routes and wiring",
+    "Google platform asset",
+    "dark product mood",
+    "existing spacing and motion scales"
+  ],
+  "introduce": [
+    "Sticker vinyl theme scoped to the OAuth error page",
+    "query-driven error message and code",
+    "die-cut sticker signature"
+  ]
+}
