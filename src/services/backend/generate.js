@@ -1,5 +1,5 @@
-import axios from "axios";
-async function Generate(imageData, UserPrompt,setEditorValue) {
+import { api } from "../../utils/axios/ApiReq";
+async function Generate(imageData, UserPrompt, setEditorValue) {
   const formData = new FormData();
   formData.append("image", imageData)
   formData.append("userPrompt", UserPrompt)
@@ -7,7 +7,8 @@ async function Generate(imageData, UserPrompt,setEditorValue) {
     "http://localhost:3000/generate",
     {
       method: "POST",
-      body: formData
+      body: formData,
+      credentials: "include"
     }
   )
   const reader = response.body.getReader();
@@ -22,12 +23,12 @@ async function Generate(imageData, UserPrompt,setEditorValue) {
   }
 }
 
-async function Edit(code,editPrompt) {
-  const response = await axios.post("http://localhost:3000/generate/edit",{
-    editPrompt:editPrompt,
-    code:code
+async function Edit(code, editPrompt) {
+  const response = await api.post("http://localhost:3000/generate/edit", {
+    editPrompt: editPrompt,
+    code: code
   })
   return response.data
 }
 
-export {Generate, Edit}
+export { Generate, Edit }

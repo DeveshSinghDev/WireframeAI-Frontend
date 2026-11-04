@@ -1,112 +1,181 @@
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Star, ChevronDown, BarChart3, BookOpen, Users, Rocket } from "lucide-react";
-import Console from "./Console";
-import Demo from "./Viewdemo";
+import { ArrowRight, Check, Copy, Pause, Play, Star } from "lucide-react";
 import Wire from "../assets/wire.mp4";
+import WirePoster from "../assets/wire-poster.jpg";
 import Navbar from "../components/Navbar";
-import Say from "../components/Testimonial"
+import Precision from "../components/Features";
 import Pricing from "../components/Pricing";
 import FAQ from "../components/FAQ";
-import Footer from "../components/Footer";
 import Tryit from "../components/Tryit";
-import Precision from "../components/Features";
-// import Dotgrid from "../components/Dotgrid";
+import Footer from "../components/Footer";
 
-function App() {
+const CODE = [
+    [["key", "export default function"], ["name", " Landing"], ["punc", "() {"]],
+    [["punc", "  return ("]],
+    [["punc", "    <"], ["key", "section"], ["str", ' className="shell"'], ["punc", ">"]],
+    [["punc", "      <"], ["key", "h1"], ["punc", ">"], ["text", "Wireframes in. React out."], ["punc", "</"], ["key", "h1"], ["punc", ">"]],
+    [["punc", "      <"], ["key", "Button"], ["str", ' variant="primary"'], ["punc", ">"], ["text", "Start free"], ["punc", "</"], ["key", "Button"], ["punc", ">"]],
+    [["punc", "    </"], ["key", "section"], ["punc", ">"]],
+    [["punc", "  );"]],
+    [["punc", "}"]],
+];
+
+const CODE_TEXT = `export default function Landing() {
+  return (
+    <section className="shell">
+      <h1>Wireframes in. React out.</h1>
+      <Button variant="primary">Start free</Button>
+    </section>
+  );
+}`;
+
+function Home() {
+    const videoRef = useRef(null);
+    const [playing, setPlaying] = useState(() => !window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    const [copied, setCopied] = useState(false);
+
+    useEffect(() => {
+        if (!copied) return undefined;
+        const timer = window.setTimeout(() => setCopied(false), 2000);
+        return () => window.clearTimeout(timer);
+    }, [copied]);
+
+    const toggleVideo = useCallback(() => {
+        const video = videoRef.current;
+        if (!video) return;
+        if (video.paused) {
+            const playback = video.play();
+            if (playback && typeof playback.catch === "function") {
+                playback.catch(() => setPlaying(false));
+            }
+            setPlaying(true);
+        } else {
+            video.pause();
+            setPlaying(false);
+        }
+    }, []);
+
+    const copyCode = useCallback(async () => {
+        try {
+            await navigator.clipboard.writeText(CODE_TEXT);
+            setCopied(true);
+        } catch {
+            setCopied(false);
+        }
+    }, []);
+
     return (
-        <section className="relative min-h-screen w-full bg-white overflow-hidden">
+        <div className="home-page">
+            <a className="skip" href="#main">Skip to content</a>
             <Navbar />
 
-            {/* <Dotgrid /> */}
+            <main id="main">
+                <section className="hero" aria-labelledby="hero-title">
+                    <div className="shell hero__inner">
+                        <div className="hero__copy">
+                            <h1 id="hero-title">Wireframes in. React out.</h1>
+                            <p className="hero__lead">
+                                Sketch a screen, describe it, get typed React before the idea cools.
+                            </p>
+                            <div className="hero__actions">
+                                <Link className="btn btn--primary" to="/login">
+                                    Start free
+                                    <ArrowRight size={18} aria-hidden="true" />
+                                </Link>
+                            </div>
+                            <p className="hero__terms">No credit card to start. 5 free generations.</p>
+                            <p className="hero__proof">
+                                <Star className="hero__star" size={14} fill="currentColor" aria-hidden="true" />
+                                4.9 rating from 18.3K+ users
+                            </p>
+                        </div>
 
-
-            {/* HERO CONTENT CONTAINER */}
-            <div className=" max-w-6xl mx-auto w-full px-6">
-
-                {/* Trust Badge */}
-                <div className="flex justify-center mt-35 relative z-10">
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-full shadow-sm">
-                        <Star className="w-3 h-3 fill-black stroke-none" />
-                        <span className="text-xs font-medium text-gray-700">4.9 rating from 18.3K+ users</span>
+                        <figure className="hero__visual">
+                            <div className="hero-panel">
+                                <div className="hero-panel__bar">
+                                    <span>WireframeAI capture</span>
+                                </div>
+                                <div className="hero-panel__media">
+                                    <video
+                                        ref={videoRef}
+                                        src={Wire}
+                                        poster={WirePoster}
+                                        autoPlay={playing}
+                                        muted
+                                        loop
+                                        playsInline
+                                        preload="metadata"
+                                        aria-label="WireframeAI generating a React component from a wireframe"
+                                    />
+                                    <button
+                                        type="button"
+                                        className="hero-panel__toggle"
+                                        onClick={toggleVideo}
+                                        aria-label={playing ? "Pause product preview" : "Play product preview"}
+                                    >
+                                        {playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
+                                    </button>
+                                </div>
+                            </div>
+                            <figcaption className="hero__caption">A wireframe becoming a live React component.</figcaption>
+                        </figure>
                     </div>
-                </div>
+                </section>
 
-                {/* Heading */}
-                <div className="flex flex-col items-center text-center mt-6 relative z-10">
-                    <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[0.95] text-black">
-                        Turn Components into
-                        <br />
-                        <span className="bg-linear-to-r from-black via-blue-500 to-blue-400 bg-clip-text text-transparent mt-50">
-                            Production Code
-                        </span>
-                    </h1>
+                <Precision />
 
-                    <p className="text-base sm:text-lg text-gray-500 max-w-xl mx-auto mt-5">
-                        Generate quick react components for your website using our wireframe to react components generator powered by AI.
-                    </p>
-                </div>
+                <section id="product" className="section" aria-labelledby="product-title">
+                    <div className="shell split">
+                        <div className="split__copy">
+                            <h2 id="product-title">React you can edit.</h2>
+                            <p>
+                                A wireframe in. Typed components out. Every prop and class is yours from the
+                                start.
+                            </p>
+                            <ul className="fact-list">
+                                <li><span>Output</span><span>React + Tailwind</span></li>
+                                <li><span>Props</span><span>Typed and editable</span></li>
+                                <li><span>Handoff</span><span>Plain files, no lock-in</span></li>
+                            </ul>
+                        </div>
 
-                {/* Buttons */}
-                <div className="mt-15 flex justify-center gap-10 relative z-10">
-                    <button className="border border-black bg-black text-white rounded-2xl w-35 h-12 font-medium hover:text-orange-400  hover:-translate-y-1 transition-all duration-400">
-                        <Link to="/login" className="w-full h-full flex items-center justify-center">
-                            Get Started
-                        </Link>
-                    </button>
+                        <div>
+                            <div className="code-panel">
+                                <div className="code-panel__bar">
+                                    <span className="code-panel__file">src/components/Landing.jsx</span>
+                                    <button type="button" className="copy-button" onClick={copyCode}>
+                                        {copied ? <Check size={15} aria-hidden="true" /> : <Copy size={15} aria-hidden="true" />}
+                                        {copied ? "Copied" : "Copy code"}
+                                    </button>
+                                </div>
+                                <pre aria-label="Example generated React component">
+                                    <code>
+                                        {CODE.map((line, lineIndex) => (
+                                            <span className="code-line" key={lineIndex}>
+                                                {line.map(([kind, text], tokenIndex) => (
+                                                    <span className={`tok-${kind}`} key={tokenIndex}>{text}</span>
+                                                ))}
+                                            </span>
+                                        ))}
+                                    </code>
+                                </pre>
+                                <span className="sr-only" aria-live="polite">
+                                    {copied ? "Generated code copied to the clipboard" : ""}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-                    <button className="border border-black bg-black text-white rounded-2xl w-35 h-12 font-medium hover:text-blue-500  hover:-translate-y-1 transition-all duration-400">
-                        <Link to="/demo" className="w-full h-full flex items-center justify-center">
-                            View Demo
-                        </Link>
-                    </button>
-                </div>
-            </div>
+                <Pricing />
+                <FAQ />
+                <Tryit />
+            </main>
 
-            {/* Video */}
-            <div className="relative z-10 max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl border border-gray-200 mt-24 mb-20 px-4 sm:px-0">
-                <video
-                    src={Wire}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="w-full h-auto object-cover scale-110"
-                />
-            </div>
-
-            {/* MARQUEE BRAND SECTION */}
-            <div>
-                <div className="mt-20 flex flex-wrap items-center justify-center gap-x-12 gap-y-6 select-none opacity-50">
-                    <span className="text-xs font-bold tracking-[0.15em] uppercase text-gray-800">Interscope</span>
-                    <span className="text-xs font-bold tracking-[0.12em] uppercase text-gray-800">Spotify</span>
-                    <span className="flex items-center gap-1.5 text-xs font-medium text-gray-800">
-                        <span className="grid grid-cols-2 gap-0.5">
-                            {[...Array(4)].map((_, i) => <span key={i} className="w-1 h-1 rounded-full bg-gray-700 block" />)}
-                        </span>
-                        Nexera
-                    </span>
-                    <span className="text-sm font-bold text-gray-800 font-serif italic">M3</span>
-                    <span className="flex items-center gap-1.5 text-xs font-medium tracking-wide uppercase text-gray-800">
-                        <span className="w-4 h-4 rounded-full border border-gray-400 flex items-center justify-center text-[8px] font-bold">LC</span>
-                        Laura Cole
-                    </span>
-                    <span className="flex items-center gap-1 text-xs font-medium text-gray-800">
-                        vertex
-                        {[...Array(3)].map((_, i) => <span key={i} className="w-0.75 h-0.75 rounded-full bg-gray-400 inline-block ml-0.5" />)}
-                    </span>
-                </div>
-            </div>
-
-
-
-            <Precision />
-            <Pricing />
-            <Say />
-            <FAQ />
-            <Tryit />
             <Footer />
-        </section>
+        </div>
     );
 }
 
-export default App;
+export default Home;

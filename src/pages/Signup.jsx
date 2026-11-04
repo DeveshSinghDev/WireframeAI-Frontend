@@ -37,6 +37,11 @@ const SignupForm = ({ navigate, challenge }) => {
   const submitting = useRef(false)
   const { showToast } = useToast()
 
+  async function handlegoogle(e) {
+    e.preventDefault()
+    window.location.href = "http://localhost:3000/auth/google"
+  }
+
   async function handleSignup(e) {
     e.preventDefault()
     if (submitting.current) return
@@ -141,7 +146,7 @@ const SignupForm = ({ navigate, challenge }) => {
 
         <p className="auth-or">or sign up with</p>
 
-        <button type="button" className="auth-quiet">
+        <button type="button" className="auth-quiet" onClick={handlegoogle}>
           <img src={Google} alt="" width="18" height="18" />
           Google
         </button>

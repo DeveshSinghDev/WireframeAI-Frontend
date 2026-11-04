@@ -18,6 +18,7 @@ import Precision from "./components/Features";
 import Blog from "./pages/Blog";
 import DashboardPage from './pages/Dashboard';
 import Support from "./pages/Support";
+import OAuthError from "./pages/OAuthError";
 import Protected from './components/Auth/Protected';
 
 function App() {
@@ -36,6 +37,9 @@ function App() {
         {/* Login */}
         <Route path="/login" element={<Login />} />
 
+        <Route path="/auth/error" element={<OAuthError />} />
+        <Route path="/oauth/error" element={<OAuthError />} />
+
         {/* Signup */}
         <Route path="/Signup" element={<Signup />} />
 
@@ -46,10 +50,10 @@ function App() {
         <Route path="/Privacy" element={<Privacy />} />
 
         {/* Console  */}
-        <Route path="/console" element={<Console />} />
+        <Route path="/console" element={<Protected><Console /></Protected>} />
 
         {/* Dashboard  */}
-        <Route path="/dashboard" element={<Protected><DashboardPage/></Protected>} />
+        <Route path="/dashboard" element={<Protected><DashboardPage /></Protected>} />
 
         {/* Forgot Password */}
         <Route path="/forgot-password" element={<ForgotP />} />
@@ -58,23 +62,12 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Pricing */}
-        <Route path="/pricing" element={<Pricing />} />
-
-        <Route path="/tryit" element={<Tryit />} />
 
         <Route path="/test" element={<Test />} />
-
-        <Route path="/demo" element={<Demo />} />
-
-        <Route path="/precision" element={<Precision />} />
 
         <Route path="/blog" element={<Blog />} />
 
         <Route path="/support" element={<Support />} />
-
-
-
-
 
 
       </Routes>
