@@ -50,7 +50,7 @@ function App() {
         <Route path="/Privacy" element={<Privacy />} />
 
         {/* Console  */}
-        <Route path="/console" element={<Console />} />
+        <Route path="/console" element={<Protected><Console /></Protected>} />
 
         {/* Dashboard  */}
         <Route path="/dashboard" element={<Protected><DashboardPage /></Protected>} />

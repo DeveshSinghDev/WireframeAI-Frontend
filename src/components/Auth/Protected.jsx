@@ -1,15 +1,15 @@
 import useAuth from "../../context/Hooks/AuthHook"
-import { Navigate, useNavigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 import DashboardLoading from "../Dashboard/DashboardLoading"
-const Protected = ({children})=>{
-  const {user,loading} = useAuth()
-  if(loading){
-    return <DashboardLoading/>
+const Protected = ({ children }) => {
+  const { user, loading } = useAuth()
+  if (loading) {
+    return <DashboardLoading />
   }
-  else if(!user){
+  else if (!user) {
     return <Navigate to={'/login'}></Navigate>
   }
-  else{
+  else {
     return children;
   }
 }
