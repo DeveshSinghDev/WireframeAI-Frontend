@@ -1,113 +1,82 @@
-import Arrow from "../assets/arrow.png";
+import { Link } from "react-router-dom";
+
+const PLANS = [
+  {
+    title: "Free plan",
+    price: "0",
+    desc: "The essentials for a first screen.",
+    features: [
+      "5 component generations a month",
+      "React export code",
+      "Access to community components",
+      "Standard support",
+    ],
+  },
+  {
+    title: "Pro plan",
+    price: "5",
+    desc: "For freelancers and solo developers.",
+    features: [
+      "Everything in Free",
+      "API access",
+      "Team collaboration",
+      "Priority support",
+    ],
+    featured: true,
+  },
+  {
+    title: "Team plan",
+    price: "10",
+    desc: "For small teams shipping together.",
+    features: [
+      "Unlimited components",
+      "Advanced exports",
+      "Premium components",
+      "Dedicated support",
+    ],
+  },
+];
 
 function Pricing() {
-  const plans = [
-    {
-      title: "FREE PLAN",
-      price: "0",
-      desc: "Enjoy the free plan with essential layout limits.",
-      features: [
-        "5 component generations/mo",
-        "React export code",
-        "Access to community components",
-        "Standard support",
-      ],
-    },
-    {
-      title: "PRO PLAN",
-      price: "5",
-      desc: "Perfect for freelancers and developers.",
-      features: [
-        "Everything in Free",
-        "API access",
-        "Team collaboration",
-        "Priority support",
-      ],
-      popular: true,
-    },
-    {
-      title: "TEAM PLAN",
-      price: "10",
-      desc: "Built for fast moving teams.",
-      features: [
-        "Unlimited components",
-        "Advanced exports",
-        "Premium components",
-        "Dedicated support",
-      ],
-    },
-  ];
-
   return (
-    <section className="py-24 px-6">
-      <div className="text-center mb-14">
-        <h1 className="text-5xl font-bold text-slate-900">
-          Simple, Transparent Pricing
-        </h1>
+    <section id="pricing" className="pricing" aria-labelledby="pricing-title">
+      <div className="shell">
+        <div className="section-head">
+          <h2 id="pricing-title">Three ways to build.</h2>
+          <p>Start free. Move up when it fits.</p>
+        </div>
 
-        <p className="text-slate-500 mt-3">
-          Explore our affordable range of pricing tiers.
-        </p>
-      </div>
-
-      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-        {plans.map((plan, index) => (
-          <div
-            key={index}
-            className={`rounded-3xl bg-white p-8 border min-h-[520px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-lg
-            ${
-              plan.popular
-                ? "border-orange-500 shadow-md"
-                : "border-slate-200"
-            }`}
-          >
-            <div>
-              <h3 className="text-sm font-bold text-slate-400 uppercase">
-                {plan.title}
-              </h3>
-
-              <div className="mt-3 flex items-end">
-                <span className="text-orange-500 text-5xl font-bold">$</span>
-
-                <span className="text-slate-900 text-6xl font-bold">
-                  {plan.price}
-                </span>
-
-                <span className="text-slate-500 mb-2 ml-2">
-                  /month
-                </span>
+        <div className="pricing__grid">
+          {PLANS.map((plan) => (
+            <article className={`plan${plan.featured ? " plan--featured" : ""}`} key={plan.title}>
+              <div>
+                <h3 className="plan__name">{plan.title}</h3>
+                <p className="plan__price">
+                  <span className="plan__currency">$</span>
+                  <span className="plan__amount">{plan.price}</span>
+                  <span className="plan__period">/month</span>
+                </p>
+                <p className="plan__desc">{plan.desc}</p>
               </div>
 
-              <p className="text-slate-600 mt-4 min-h-[60px]">
-                {plan.desc}
-              </p>
+              <Link
+                className={`btn btn--quiet plan__cta${plan.featured ? " plan__cta--featured" : ""}`}
+                to="/signup"
+              >
+                Get started
+              </Link>
 
-             <button className="w-full cursor-pointer hover:opacity-95 active:scale-[0.98] border border-slate-200 flex items-center justify-between pl-6 h-14 pr-1 rounded-full bg-gradient-to-r from-slate-800 to-slate-900 text-white font-semibold text-[16px] transition-all shadow-sm shadow-slate-900/10"> Get started <span className="bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-sm">
-              {/* SVG Arrow */}
-             <img src={Arrow} 
-             className="w-10 h-10 font-bold"
-             alt="Arrow" />           
-              </span>
-         </button>
-
-              <div className="border-t border-slate-200 mt-8 pt-6">
-                <ul className="space-y-4">
-                  {plan.features.map((feature, i) => (
-                    <li
-                      key={i}
-                      className="flex items-center gap-3 text-slate-600"
-                    >
-                      <span className="text-orange-500 font-bold text-lg leading-none">•</span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        ))}
+              <ul className="plan__features">
+                {plan.features.map((feature) => (
+                  <li key={feature}>{feature}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
+
 export default Pricing;

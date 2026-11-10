@@ -9,6 +9,7 @@ import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import AuthShell from "../components/Auth/AuthShell";
 import { AxiosError } from "axios";
 import { errorRedirectHandler } from "../utils/errors/errorRedirect.config";
+import { preventDefault } from "tldraw";
 
 function Login() {
   const [searchParams] = useSearchParams()
@@ -37,6 +38,11 @@ const LoginComponent = ({ challenge }) => {
   const [rememberMe, setrememberMe] = useState(false)
   const [loading, setloading] = useState(false)
   const submitting = useRef(false)
+
+  async function handlegoogle(e) {
+    preventDefault(e)
+    window.location.href = "http://localhost:3000/auth/google"
+  }
 
 
   async function HandleLogin(e) {
@@ -143,7 +149,7 @@ const LoginComponent = ({ challenge }) => {
 
         <p className="auth-or">or login with</p>
 
-        <button type="button" className="auth-quiet">
+        <button type="button" className="auth-quiet" onClick={handlegoogle}>
           <img src={Google} alt="" width="18" height="18" />
           Google
         </button>
